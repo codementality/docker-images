@@ -1,0 +1,125 @@
+sudo: required
+dist: xenial
+
+services:
+  - docker
+
+git:
+  depth: 5
+
+jobs:
+  include:
+    - stage: build codementality/base image
+      script:
+      - docker build -t base ./docker/base/.
+      - docker run -it --rm base bash -c 'cat /etc/os-release' > "release"
+      - source release
+      - ver1=${PRETTY_NAME// LTS}
+      - ver1=${ver1// /-}
+      - ver1=${ver1,,}
+      - ver1=${ver1/$'\r'/}
+      - ver2=${VERSION_ID/$'\r'/}
+      - docker tag base codementality/base
+      - docker tag base codementality/base:$ver1
+      - docker tag base codementality/base:ubuntu-$ver2
+      - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+      - docker push codementality/base
+      - docker push codementality/base:$ver1
+      - docker push codementality/base:ubuntu-$ver2
+    - stage: build codementality/apache2 image
+      script:
+      - docker build -t apache2 ./docker/apache2/.
+      - docker run -d --name apache2 apache2
+      - docker exec apache2 bash -c 'cat /etc/os-release' > "release"
+      - source release
+      - ver1=${PRETTY_NAME// LTS}
+      - ver1=${ver1// /-}
+      - ver1=${ver1,,}
+      - ver1=${ver1/$'\r'/}
+      - ver2=${VERSION_ID/$'\r'/}
+      - docker tag apache2 codementality/apache2
+      - docker tag apache2 codementality/apache2:$ver1
+      - docker tag apache2 codementality/apache2:ubuntu-$ver2
+      - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+      - docker push codementality/apache2
+      - docker push codementality/apache2:$ver1
+      - docker push codementality/apache2:ubuntu-$ver2
+    - stage: build codementality/php base image
+      script:
+      #- cp ./docker/php/Dockerfile-php ./docker/php/Dockerfile
+      - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+      #- docker build -t php ./docker/php/.
+      - docker build -t php -f ./docker/php/Dockerfile-php
+      - docker run -it --rm php bash -c 'cat /etc/os-release' > "release"
+      - source release
+      - ver1=${PRETTY_NAME// LTS}
+      - ver1=${ver1// /-}
+      - ver1=$(echo "$ver1" | awk '{print tolower($0)}')
+      - ver1=${ver1/$'\r'/}
+      - ver2=${VERSION_ID/$'\r'/}
+      - docker tag php codementality/php
+      - docker tag php codementality/php:$ver1
+      - docker tag php codementality/php:ubuntu-$ver2
+      - docker push codementality/php
+      - docker push codementality/php:$ver1
+      - docker push codementality/php:ubuntu-$ver2
+    - stage: build codementality/php7.3 image
+      script:
+      #- cp ./docker/php/Dockerfile-php7.3 ./docker/php/Dockerfile
+      - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+      #- docker build -t php7.3 ./docker/php/.
+      - docker build -t php7.3 -f ./docker/php/Dockerfile-php7.3
+      - docker run -it --rm php7.3 bash -c 'php -v'
+      - docker run -it --rm php7.3 bash -c 'cat /etc/os-release' > "release"
+      - source release
+      - ver1=${PRETTY_NAME// LTS}
+      - ver1=${ver1// /-}
+      - ver1=$(echo "$ver1" | awk '{print tolower($0)}')
+      - ver1=${ver1/$'\r'/}
+      - ver2=${VERSION_ID/$'\r'/}
+      - docker tag php7.3 codementality/php7.3
+      - docker tag php7.3 codementality/php7.3:$ver1
+      - docker tag php7.3 codementality/php7.3:ubuntu-$ver2
+      - docker push codementality/php7.3
+      - docker push codementality/php7.3:$ver1
+      - docker push codementality/php7.3:ubuntu-$ver2      
+    - stage: build codementality/php7.2 image
+      script:
+      #- cp ./docker/php/Dockerfile-php7.2 ./docker/php/Dockerfile
+      - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+      #- docker build -t php7.2 ./docker/php/.
+      - docker build -t php7.2 -f ./docker/php/Dockerfile-php7.2
+      - docker run -it --rm php7.2 bash -c 'php -v'
+      - docker run -it --rm php7.2 bash -c 'cat /etc/os-release' > "release"
+      - source release
+      - ver1=${PRETTY_NAME// LTS}
+      - ver1=${ver1// /-}
+      - ver1=$(echo "$ver1" | awk '{print tolower($0)}')
+      - ver1=${ver1/$'\r'/}
+      - ver2=${VERSION_ID/$'\r'/}
+      - docker tag php7.2 codementality/php7.2
+      - docker tag php7.2 codementality/php7.2:$ver1
+      - docker tag php7.2 codementality/php7.2:ubuntu-$ver2
+      - docker push codementality/php7.2
+      - docker push codementality/php7.2:$ver1
+      - docker push codementality/php7.2:ubuntu-$ver2      
+    - stage: build codementality/php7.1 image
+      script:
+      #- cp ./docker/php/Dockerfile-php7.1 ./docker/php/Dockerfile
+      - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+      #- docker build -t php7.1 ./docker/php/.
+      - docker build -t php7.1 -f ./docker/php/Dockerfile-php7.1
+      - docker run -it --rm php7.1 bash -c 'php -v'
+      - docker run -it --rm php7.1 bash -c 'cat /etc/os-release' > "release"
+      - source release
+      - ver1=${PRETTY_NAME// LTS}
+      - ver1=${ver1// /-}
+      - ver1=$(echo "$ver1" | awk '{print tolower($0)}')
+      - ver1=${ver1/$'\r'/}
+      - ver2=${VERSION_ID/$'\r'/}
+      - docker tag php7.1 codementality/php7.1
+      - docker tag php7.1 codementality/php7.1:$ver1
+      - docker tag php7.1 codementality/php7.1:ubuntu-$ver2
+      - docker push codementality/php7.1
+      - docker push codementality/php7.1:$ver1
+      - docker push codementality/php7.1:ubuntu-$ver2      
