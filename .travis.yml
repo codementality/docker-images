@@ -46,10 +46,8 @@ jobs:
       - docker push codementality/apache2:ubuntu-$ver2
     - stage: build codementality/php base image
       script:
-      #- cp ./docker/php/Dockerfile-php ./docker/php/Dockerfile
       - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-      #- docker build -t php ./docker/php/.
-      - docker build -t php -f ./docker/php/Dockerfile-php
+      - docker build -f ./docker/php/Dockerfile-php -t php ./docker/php
       - docker run -it --rm php bash -c 'cat /etc/os-release' > "release"
       - source release
       - ver1=${PRETTY_NAME// LTS}
@@ -65,10 +63,8 @@ jobs:
       - docker push codementality/php:ubuntu-$ver2
     - stage: build codementality/php7.3 image
       script:
-      #- cp ./docker/php/Dockerfile-php7.3 ./docker/php/Dockerfile
       - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-      #- docker build -t php7.3 ./docker/php/.
-      - docker build -t php7.3 -f ./docker/php/Dockerfile-php7.3
+      - docker build -f ./docker/php/Dockerfile-php7.3 -t php7.3 ./docker/php
       - docker run -it --rm php7.3 bash -c 'php -v'
       - docker run -it --rm php7.3 bash -c 'cat /etc/os-release' > "release"
       - source release
@@ -85,10 +81,8 @@ jobs:
       - docker push codementality/php7.3:ubuntu-$ver2      
     - stage: build codementality/php7.2 image
       script:
-      #- cp ./docker/php/Dockerfile-php7.2 ./docker/php/Dockerfile
       - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-      #- docker build -t php7.2 ./docker/php/.
-      - docker build -t php7.2 -f ./docker/php/Dockerfile-php7.2
+      - docker build -f ./docker/php/Dockerfile-php7.2 -t php7.2 ./docker/php
       - docker run -it --rm php7.2 bash -c 'php -v'
       - docker run -it --rm php7.2 bash -c 'cat /etc/os-release' > "release"
       - source release
@@ -105,10 +99,8 @@ jobs:
       - docker push codementality/php7.2:ubuntu-$ver2      
     - stage: build codementality/php7.1 image
       script:
-      #- cp ./docker/php/Dockerfile-php7.1 ./docker/php/Dockerfile
       - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-      #- docker build -t php7.1 ./docker/php/.
-      - docker build -t php7.1 -f ./docker/php/Dockerfile-php7.1
+      - docker build -f ./docker/php/Dockerfile-php7.1 -t php7.1 ./docker/php
       - docker run -it --rm php7.1 bash -c 'php -v'
       - docker run -it --rm php7.1 bash -c 'cat /etc/os-release' > "release"
       - source release
