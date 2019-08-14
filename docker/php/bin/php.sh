@@ -13,12 +13,14 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y \
     php<PHP_VERSION>-curl \
     php<PHP_VERSION>-dom \
     php<PHP_VERSION>-gd \
+    php<PHP_VERSION>-geoip \
     php<PHP_VERSION>-gmp \
     php<PHP_VERSION>-gnupg \
     php<PHP_VERSION>-http \
     php<PHP_VERSION>-igbinary \
     php<PHP_VERSION>-imagick \
     php<PHP_VERSION>-imap \
+    php<PHP_VERSION>-intl \
     php<PHP_VERSION>-ldap \
     php<PHP_VERSION>-mbstring \
     php<PHP_VERSION>-memcache \
@@ -36,6 +38,7 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y \
 && if [[ "$WEB_PHP_VERSION" == "7.1" ]]; then
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
     php7.1-ssh2 \
+    php7.1-mcrypt \
     php7.1-xdebug
 elif [[ "$WEB_PHP_VERSION" == "7.2" ]]; then
     DEBIAN_FRONTEND=noninteractive apt-get install -y php-pear \
@@ -65,6 +68,7 @@ elif [[ "$WEB_PHP_VERSION" == "7.2" ]]; then
         php<PHP_VERSION>-xmlreader \
         php<PHP_VERSION>-xmlwriter \
     && pecl install xdebug-2.7.0 \
+    && pecl install mcrypt-1.0.1 \
     && { \
         echo 'opcache.memory_consumption=128'; \
         echo 'opcache.interned_strings_buffer=8'; \
@@ -72,7 +76,8 @@ elif [[ "$WEB_PHP_VERSION" == "7.2" ]]; then
         echo 'opcache.revalidate_freq=0'; \
         echo 'opcache.fast_shutdown=1'; \
         echo 'opcache.enable_cli=1'; \
-    } > /etc/php/<PHP_VERSION>/fpm/conf.d/20-opcache.ini
+    } > /etc/php/<PHP_VERSION>/fpm/conf.d/20-opcache.ini \
+    && bash -c "echo extension=mcrypt.so > /etc/php/7.2/fpm/conf.d/mcrypt.ini"
 elif [[ "$WEB_PHP_VERSION" == "7.3" ]]; then
     DEBIAN_FRONTEND=noninteractive apt-get install -y php-pear \
         php<PHP_VERSION>-json \
@@ -103,6 +108,8 @@ elif [[ "$WEB_PHP_VERSION" == "7.3" ]]; then
         php<PHP_VERSION>-xmlreader \
         php<PHP_VERSION>-xmlwriter \
     && pecl install xdebug-2.7.0 \
+    && pecl install mcrypt-1.0.2 \
+    && bash -c "echo extension=mcrypt.so > /etc/php/7.3/fpm/conf.d/40-mcrypt.ini" \
     && { \
         echo 'opcache.memory_consumption=128'; \
         echo 'opcache.interned_strings_buffer=8'; \
@@ -117,13 +124,13 @@ sed -i -e 's/listen = \/run\/php\/php<PHP_VERSION>-fpm.sock/listen = <PHP_SOCKET
 sed -i -e 's/;daemonize = yes/daemonize = no/g' /etc/php/<PHP_VERSION>/fpm/php-fpm.conf
 
 { \
-    echo '; Mailhog php.ini settings for Expresso PHP.';
+    echo '; Mailhog php.ini settings';
     echo 'sendmail_path = "/opt/go/bin/mhsendmail --smtp-addr=mailhog:1025"';
 } > /etc/php/<PHP_VERSION>/fpm/conf.d/20-mailhog.ini
 
 { \
     echo '[xdebug]'; \
-    echo 'zend_extension=/usr/lib/php/20170718/xdebug.so'; \
+    echo 'zend_extension=/usr/lib/php/20180731/xdebug.so'; \
     echo 'xdebug.profiler_enable=0'; \
     echo 'xdebug.default_enable=1'; \
     echo 'xdebug.remote_enable=1'; \
