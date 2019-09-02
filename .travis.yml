@@ -11,7 +11,7 @@ jobs:
   include:
     - stage: build codementality/base image
       script:
-      - docker build -t base ./docker/base/.
+      - docker build -f ./docker/base/Dockerfile-ubuntu -t base ./docker/base/.
       - docker run -it --rm base bash -c 'cat /etc/os-release' > "release"
       - source release
       - ver1=${PRETTY_NAME// LTS}
@@ -26,6 +26,20 @@ jobs:
       - docker push codementality/base
       - docker push codementality/base:$ver1
       - docker push codementality/base:ubuntu-$ver2
+    - stage: build codementality/centos7 image
+      script:
+      - docker build  -t centos7 ./docker/centos/centos7/.
+      - docker tag centos7 codementality/centos7:latest
+      - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+      - docker push codementality/centos7:latest
+    - stage: build codementality/base image based on CentOS7
+      script:
+      - docker build -f ./docker/base/Dockerfile-centos -t base ./docker/base/.
+      - docker tag base codementality/base:centos
+      - docker tag base codementality/base:centos-7
+      - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+      - docker push codementality/base:centos
+      - docker push codementality/base:centos-7
     - stage: build codementality/apache2 image
       script:
       - docker build -t apache2 ./docker/apache2/.
@@ -44,6 +58,7 @@ jobs:
       - docker push codementality/apache2
       - docker push codementality/apache2:$ver1
       - docker push codementality/apache2:ubuntu-$ver2
+
     - stage: build codementality/php base image
       script:
       - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"

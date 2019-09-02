@@ -1,0 +1,5 @@
+version: '3.4'
+services:
+  centos:
+    build: ./centos7/.
+    image: codementality/centos7:latest
