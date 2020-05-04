@@ -10,8 +10,9 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     php<PHP_VERSION>-bcmath \
     php<PHP_VERSION>-bz2 \
+    php<PHP_VERSION>-calendar \
+    php<PHP_VERSION>-ctype \
     php<PHP_VERSION>-curl \
-    php<PHP_VERSION>-dom \
     php<PHP_VERSION>-gd \
     php<PHP_VERSION>-geoip \
     php<PHP_VERSION>-gmp \
@@ -21,12 +22,14 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y \
     php<PHP_VERSION>-imagick \
     php<PHP_VERSION>-imap \
     php<PHP_VERSION>-intl \
+    php<PHP_VERSION>-json \
     php<PHP_VERSION>-ldap \
     php<PHP_VERSION>-mbstring \
     php<PHP_VERSION>-memcache \
     php<PHP_VERSION>-memcached \
     php<PHP_VERSION>-mysql \
     php<PHP_VERSION>-oauth \
+    php<PHP_VERSION>-opcache \
     php<PHP_VERSION>-radius \
     php<PHP_VERSION>-soap \
     php<PHP_VERSION>-tidy \
@@ -34,18 +37,17 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y \
     php<PHP_VERSION>-xmlrpc \
     php<PHP_VERSION>-xsl \
     php<PHP_VERSION>-yaml \
-    php<PHP_VERSION>-zip \
-elif [[ "$WEB_PHP_VERSION" == "7.2" ]]; then
+    php<PHP_VERSION>-zip
+
+if [[ "$WEB_PHP_VERSION" == "7.2" ]]; then
     DEBIAN_FRONTEND=noninteractive apt-get install -y php-pear \
-        php<PHP_VERSION>-json \
-        php<PHP_VERSION>-opcache \
-        php<PHP_VERSION>-calendar \
-        php<PHP_VERSION>-ctype \
+        php<PHP_VERSION>-dom \
         php<PHP_VERSION>-exif \
         php<PHP_VERSION>-fileinfo \
         php<PHP_VERSION>-ftp \
         php<PHP_VERSION>-gettext \
         php<PHP_VERSION>-iconv \
+        php<PHP_VERSION>-mbstring \
         php<PHP_VERSION>-pdo \
         php<PHP_VERSION>-pdo-mysql \
         php<PHP_VERSION>-phar \
@@ -73,12 +75,10 @@ elif [[ "$WEB_PHP_VERSION" == "7.2" ]]; then
         echo 'opcache.enable_cli=1'; \
     } > /etc/php/<PHP_VERSION>/fpm/conf.d/20-opcache.ini \
     && bash -c "echo extension=mcrypt.so > /etc/php/7.2/fpm/conf.d/mcrypt.ini"
+
 elif [[ "$WEB_PHP_VERSION" == "7.3" ]]; then
     DEBIAN_FRONTEND=noninteractive apt-get install -y php-pear \
-        php<PHP_VERSION>-json \
-        php<PHP_VERSION>-opcache \
-        php<PHP_VERSION>-calendar \
-        php<PHP_VERSION>-ctype \
+        php<PHP_VERSION>-dom \
         php<PHP_VERSION>-exif \
         php<PHP_VERSION>-fileinfo \
         php<PHP_VERSION>-ftp \
@@ -92,7 +92,6 @@ elif [[ "$WEB_PHP_VERSION" == "7.3" ]]; then
         php<PHP_VERSION>-shmop \
         php<PHP_VERSION>-simplexml \
         php<PHP_VERSION>-sockets \
-        php<PHP_VERSION>-solr \
         php<PHP_VERSION>-sysvmsg \
         php<PHP_VERSION>-sysvshm \
         php<PHP_VERSION>-sysvsem \
@@ -114,12 +113,9 @@ elif [[ "$WEB_PHP_VERSION" == "7.3" ]]; then
         echo 'opcache.fast_shutdown=1'; \
         echo 'opcache.enable_cli=1'; \
     } > /etc/php/<PHP_VERSION>/fpm/conf.d/20-opcache.ini
+
 elif [[ "$WEB_PHP_VERSION" == "7.4" ]]; then
     DEBIAN_FRONTEND=noninteractive apt-get install -y php-pear \
-        php<PHP_VERSION>-json \
-        php<PHP_VERSION>-opcache \
-        php<PHP_VERSION>-calendar \
-        php<PHP_VERSION>-ctype \
         php<PHP_VERSION>-exif \
         php<PHP_VERSION>-fileinfo \
         php<PHP_VERSION>-ftp \

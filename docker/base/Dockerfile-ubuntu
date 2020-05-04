@@ -4,9 +4,11 @@ COPY bin/ /opt/local/bin/
 
 RUN apt-get -y update \
  && apt-get -y upgrade \
- && apt-get -y install ca-certificates apt-transport-https curl wget zip unzip bzip2 p7zip rsync git lsb-release \
+ && DEBIAN_FRONTEND=noninteractive apt-get -y install ca-certificates apt-transport-https curl gpg tzdata wget zip unzip bzip2 p7zip rsync git lsb-release \
  ## Add other packages here, but the following two lines need to run last after adding packages
  ## to reduce the size of the container.
+ && ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime \
+ && dpkg-reconfigure --frontend noninteractive tzdata \
  && rm -rf /var/lib/apt/lists/* \
  && apt autoremove -y \
  ## Add gosu and go-replace

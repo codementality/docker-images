@@ -1,5 +1,5 @@
 sudo: required
-dist: xenial
+dist: bionic
 
 services:
   - docker
@@ -93,7 +93,7 @@ jobs:
       - docker push codementality/php7.4
       - docker push codementality/php7.4:$ver1
       - docker push codementality/php7.4:ubuntu-$ver2      
-    - stage: build codementality/php7.4 image
+    - stage: build codementality/php7.3 image
       script:
       - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
       - docker build -f ./docker/php/Dockerfile-php7.3 -t php7.3 ./docker/php
