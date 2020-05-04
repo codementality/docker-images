@@ -58,7 +58,6 @@ jobs:
       - docker push codementality/apache2
       - docker push codementality/apache2:$ver1
       - docker push codementality/apache2:ubuntu-$ver2
-
     - stage: build codementality/php base image
       script:
       - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
@@ -76,7 +75,25 @@ jobs:
       - docker push codementality/php
       - docker push codementality/php:$ver1
       - docker push codementality/php:ubuntu-$ver2
-    - stage: build codementality/php7.3 image
+    - stage: build codementality/php7.4 image
+      script:
+      - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+      - docker build -f ./docker/php/Dockerfile-php7.4 -t php7.4 ./docker/php
+      - docker run -it --rm php7.4 bash -c 'php -v'
+      - docker run -it --rm php7.4 bash -c 'cat /etc/os-release' > "release"
+      - source release
+      - ver1=${PRETTY_NAME// LTS}
+      - ver1=${ver1// /-}
+      - ver1=$(echo "$ver1" | awk '{print tolower($0)}')
+      - ver1=${ver1/$'\r'/}
+      - ver2=${VERSION_ID/$'\r'/}
+      - docker tag php7.4 codementality/php7.4
+      - docker tag php7.4 codementality/php7.4:$ver1
+      - docker tag php7.4 codementality/php7.4:ubuntu-$ver2
+      - docker push codementality/php7.4
+      - docker push codementality/php7.4:$ver1
+      - docker push codementality/php7.4:ubuntu-$ver2      
+    - stage: build codementality/php7.4 image
       script:
       - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
       - docker build -f ./docker/php/Dockerfile-php7.3 -t php7.3 ./docker/php
@@ -112,21 +129,3 @@ jobs:
       - docker push codementality/php7.2
       - docker push codementality/php7.2:$ver1
       - docker push codementality/php7.2:ubuntu-$ver2      
-    - stage: build codementality/php7.1 image
-      script:
-      - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-      - docker build -f ./docker/php/Dockerfile-php7.1 -t php7.1 ./docker/php
-      - docker run -it --rm php7.1 bash -c 'php -v'
-      - docker run -it --rm php7.1 bash -c 'cat /etc/os-release' > "release"
-      - source release
-      - ver1=${PRETTY_NAME// LTS}
-      - ver1=${ver1// /-}
-      - ver1=$(echo "$ver1" | awk '{print tolower($0)}')
-      - ver1=${ver1/$'\r'/}
-      - ver2=${VERSION_ID/$'\r'/}
-      - docker tag php7.1 codementality/php7.1
-      - docker tag php7.1 codementality/php7.1:$ver1
-      - docker tag php7.1 codementality/php7.1:ubuntu-$ver2
-      - docker push codementality/php7.1
-      - docker push codementality/php7.1:$ver1
-      - docker push codementality/php7.1:ubuntu-$ver2      

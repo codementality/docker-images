@@ -35,11 +35,6 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y \
     php<PHP_VERSION>-xsl \
     php<PHP_VERSION>-yaml \
     php<PHP_VERSION>-zip \
-&& if [[ "$WEB_PHP_VERSION" == "7.1" ]]; then
-    DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    php7.1-ssh2 \
-    php7.1-mcrypt \
-    php7.1-xdebug
 elif [[ "$WEB_PHP_VERSION" == "7.2" ]]; then
     DEBIAN_FRONTEND=noninteractive apt-get install -y php-pear \
         php<PHP_VERSION>-json \
@@ -89,6 +84,7 @@ elif [[ "$WEB_PHP_VERSION" == "7.3" ]]; then
         php<PHP_VERSION>-ftp \
         php<PHP_VERSION>-gettext \
         php<PHP_VERSION>-iconv \
+        php<PHP_VERSION>-mbstring \
         php<PHP_VERSION>-pdo \
         php<PHP_VERSION>-pdo-mysql \
         php<PHP_VERSION>-phar \
@@ -110,6 +106,47 @@ elif [[ "$WEB_PHP_VERSION" == "7.3" ]]; then
     && pecl install xdebug-2.7.0 \
     && pecl install mcrypt-1.0.2 \
     && bash -c "echo extension=mcrypt.so > /etc/php/7.3/fpm/conf.d/40-mcrypt.ini" \
+    && { \
+        echo 'opcache.memory_consumption=128'; \
+        echo 'opcache.interned_strings_buffer=8'; \
+        echo 'opcache.max_accelerated_files=4000'; \
+        echo 'opcache.revalidate_freq=0'; \
+        echo 'opcache.fast_shutdown=1'; \
+        echo 'opcache.enable_cli=1'; \
+    } > /etc/php/<PHP_VERSION>/fpm/conf.d/20-opcache.ini
+elif [[ "$WEB_PHP_VERSION" == "7.4" ]]; then
+    DEBIAN_FRONTEND=noninteractive apt-get install -y php-pear \
+        php<PHP_VERSION>-json \
+        php<PHP_VERSION>-opcache \
+        php<PHP_VERSION>-calendar \
+        php<PHP_VERSION>-ctype \
+        php<PHP_VERSION>-exif \
+        php<PHP_VERSION>-fileinfo \
+        php<PHP_VERSION>-ftp \
+        php<PHP_VERSION>-gettext \
+        php<PHP_VERSION>-iconv \
+        php<PHP_VERSION>-mbstring \
+        php<PHP_VERSION>-pdo \
+        php<PHP_VERSION>-pdo-mysql \
+        php<PHP_VERSION>-phar \
+        php<PHP_VERSION>-posix \
+        php<PHP_VERSION>-shmop \
+        php<PHP_VERSION>-simplexml \
+        php<PHP_VERSION>-sockets \
+        php<PHP_VERSION>-solr \
+        php<PHP_VERSION>-sysvmsg \
+        php<PHP_VERSION>-sysvshm \
+        php<PHP_VERSION>-sysvsem \
+        php<PHP_VERSION>-ssh2 \
+        php<PHP_VERSION>-tokenizer \
+        php<PHP_VERSION>-uploadprogress \
+        php<PHP_VERSION>-wddx \
+        php<PHP_VERSION>-xml \
+        php<PHP_VERSION>-xmlreader \
+        php<PHP_VERSION>-xmlwriter \
+    && pecl install xdebug-2.9.5 \
+    && pecl install mcrypt-1.0.3 \
+    && bash -c "echo extension=mcrypt.so > /etc/php/7.4/fpm/conf.d/40-mcrypt.ini" \
     && { \
         echo 'opcache.memory_consumption=128'; \
         echo 'opcache.interned_strings_buffer=8'; \
